@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import psycopg2
 import os
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -12,6 +13,16 @@ DB_NAME = os.getenv('DB_NAME')
 
 def get_db_connection():
     return psycopg2.connect(host=DB_HOST, user=DB_USER, password=DB_PASS, dbname=DB_NAME)
+
+@app.route('/', methods=['GET'])
+def hello_world():
+    return 'Hello World!'
+
+@app.route('/health', methods=['GET'])
+def health_check():
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    return jsonify({"status": "healthy", "time": current_time})
+
 
 @app.route('/select_query', methods=['POST'])
 def select_query():
